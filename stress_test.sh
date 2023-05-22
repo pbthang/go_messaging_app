@@ -2,8 +2,16 @@
 
 URL="http://localhost:8080/api/send"
 JSON_DATA='{"Chat": "john:jane", "Text": "Lorem ipsum dolor ...", "Sender": "john"}'
-CONCURRENCY=1
-REQUESTS=10
+CONCURRENCY=$1
+REQUESTS=$2
+
+if [ -z "$CONCURRENCY" ]; then
+    CONCURRENCY=20
+fi
+
+if [ -z "$REQUESTS" ]; then
+    REQUESTS=50
+fi
 
 function send_request() {
     local url=$1
