@@ -5,7 +5,7 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/TikTokTechImmersion/assignment_demo_2023/rpc-server/kitex_gen/rpc"
+	"github.com/pbthang/go_messaging_app/rpc-server/kitex_gen/rpc"
 	"github.com/stretchr/testify/assert"
 )
 

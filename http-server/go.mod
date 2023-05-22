@@ -1,4 +1,4 @@
-module github.com/TikTokTechImmersion/assignment_demo_2023/http-server
+module github.com/pbthang/go_messaging_app/http-server
 
 go 1.18
 
@@ -6,6 +6,7 @@ require (
 	github.com/apache/thrift v0.13.0
 	github.com/cloudwego/hertz v0.6.1
 	github.com/cloudwego/kitex v0.5.2
+	github.com/hertz-contrib/logger/accesslog v0.0.0-20230428050608-fc430385c0ec
 	github.com/kitex-contrib/registry-etcd v0.1.0
 	google.golang.org/protobuf v1.28.1
 )
