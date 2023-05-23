@@ -96,6 +96,14 @@ Expected Response: status `200`
 
 ## Testing
 
+### Unit test
+
+Execute the following command in `./rpc-server` folder to run unit tests and get test coverage:
+
+```bash
+ go test -race -cover -coverprofile=coverage.out $(go list ./... | grep -Ev "_gen") -coverpkg $(go list ./... | grep -Ev "_gen" | tr "\n" "," | sed 's/.$//')
+```
+
 ### Stress test
 
 Use the script `stress_test.sh` to run a stress test with `<concurrent>` concurrent requests and `<requests>` request batches.
