@@ -17,14 +17,14 @@ var redisPassword string
 func init() {
 	if os.Getenv("ENV") == "PROD" {
 		redisAddr = "redis:6379"
-		redisPassword = "redis"
+		redisPassword = ""
 	} else {
 		redisAddr = "localhost:6379"
 		redisPassword = ""
 	}
 	db = redis.NewClient(&redis.Options{
 		Addr:     redisAddr,
-		Password: "",
+		Password: redisPassword,
 		DB:       0,
 	})
 	_, err := db.Ping(ctx).Result()
@@ -105,4 +105,14 @@ func GetMessages(chat string, cursor, limit int64, reverse bool) ([]*rpc.Message
 	}
 
 	return messages, hasMore, nextCursor, nil
+}
+
+// for testing purpose only
+
+func FlushAll() {
+	db.FlushAll(ctx)
+}
+
+func DeleteChat(chat string) {
+	db.Del(ctx, chat)
 }

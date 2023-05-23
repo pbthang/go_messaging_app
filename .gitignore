@@ -24,3 +24,4 @@ output
 default.etcd
 .idea
 .DS_Store
+*.log

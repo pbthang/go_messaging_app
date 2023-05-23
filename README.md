@@ -12,6 +12,19 @@ Make sure you have docker and docker-compose installed. Run the following comman
 ```bash
 docker-compose up
 ```
+
+### Delete all data
+
+Execute the following command to connect to the running redis container:
+```bash
+docker exec -it $(docker ps | grep redis | awk '{print $1;}') redis-cli
+```
+
+Then execute the following command to delete all data:
+```bash
+FLUSHALL
+```
+
 ## API Documentation
 
 ### Ping
@@ -66,7 +79,7 @@ curl -X GET \
 }'
 ```
 
-Expected Response:
+Expected Response: status `200`
 
 ```json
 {
@@ -76,7 +89,7 @@ Expected Response:
       "text": "Lorem ipsum dolor ...",
       "sender": "john",
       "send_time": 1684744610
-    }
+    }, ...
   ]
 }
 ```

@@ -1,32 +1,52 @@
 #!/bin/bash
 
-URL="http://localhost:8080/api/send"
-JSON_DATA='{"Chat": "john:jane", "Text": "Lorem ipsum dolor ...", "Sender": "john"}'
-CONCURRENCY=$1
-REQUESTS=$2
+URL_SEND="http://localhost:8080/api/send"
+URL_PULL="http://localhost:8080/api/pull"
+JSON_SEND='{"Chat": "john:jane", "Text": "Lorem ipsum dolor ...", "Sender": "john"}'
+JSON_PULL='{"Chat": "john:jane", "Cursor": 0, "Limit": 20, "Reverse": false}'
+METHOD_POST="POST"
+METHOD_GET="GET"
+CONCURRENCY=20
+REQUESTS=50
+LOG_FILE_SEND="stress_test_send.log"
+LOG_FILE_PULL="stress_test_pull.log"
 
-if [ -z "$CONCURRENCY" ]; then
-    CONCURRENCY=20
+if [ ! -z "$1" ]; then
+    CONCURRENCY=$1
+fi
+if [ ! -z "$2" ]; then
+    REQUESTS=$2
 fi
 
-if [ -z "$REQUESTS" ]; then
-    REQUESTS=50
-fi
 
 function send_request() {
     local url=$1
     local data=$2
-    curl -s -X POST -H "Content-Type: application/json" -d "$data" "$url" -o /dev/null -w "%{http_code}\n"
+    local method=$3
+    local log_file=$4
+    curl -s -X "$method" -H "Accept: application/json" -H "Content-Type: application/json" -d "$data" "$url" -o dev/null -w "Status %{http_code}, took %{time_total}s\n" >> "$log_file"
 }
 
 # Start time
 start_time=$(date +%s)
+# clear log files
+date +"%F %T%Z" > "$LOG_FILE_SEND"
+date +"%F %T%Z" > "$LOG_FILE_PULL"
 
-# Run concurrent requests
+# Run concurrent requests for POST
 for ((i = 1; i <= CONCURRENCY; i++)); do
     {
         for ((j = 1; j <= REQUESTS; j++)); do
-            send_request "$URL" "$JSON_DATA"
+            send_request "$URL_SEND" "$JSON_SEND" "$METHOD_POST" "$LOG_FILE_SEND"
+        done
+    } &
+done
+
+# Run concurrent requests for GET
+for ((i = 1; i <= CONCURRENCY; i++)); do
+    {
+        for ((j = 1; j <= REQUESTS; j++)); do
+            send_request "$URL_PULL" "$JSON_PULL" "$METHOD_GET" "$LOG_FILE_PULL"
         done
     } &
 done
