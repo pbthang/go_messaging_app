@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rpc-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rpc-server
+  template:
+    metadata:
+      labels:
+        app: rpc-server
+    spec:
+      containers:
+        - name: rpc-server
+          image: pbthang/go_messaging_app-rpc-server:1.0
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8888
+          env:
+            - name: SERVICE_NAME
+              value: rpc-server
+            - name: SERVICE_TAGS
+              value: rpc
+            - name: ENV
+              value: PROD
+#          resources:
+          # Define resource limits and requests if needed
+          # limits:
+          #   cpu: "1"
+          #   memory: "512Mi"
+          # requests:
+          #   cpu: "500m"
+          #   memory: "256Mi"
+          readinessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - nc -z localhost 8888
+            initialDelaySeconds: 10
+            periodSeconds: 10

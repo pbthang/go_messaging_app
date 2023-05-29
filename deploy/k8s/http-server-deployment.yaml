@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: http-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: http-server
+  template:
+    metadata:
+      labels:
+        app: http-server
+    spec:
+      containers:
+        - name: http-server
+          image: pbthang/go_messaging_app-http-server:1.0
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SERVICE_NAME
+              value: http-server
+            - name: SERVICE_TAGS
+              value: http
+            - name: ENV
+              value: PROD
+          # Define resource limits and requests if needed
+          # limits:
+          #   cpu: "1"
+          #   memory: "512Mi"
+          # requests:
+          #   cpu: "500m"
+          #   memory: "256Mi"
+          readinessProbe:
+            httpGet:
+              path: /ping
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 10

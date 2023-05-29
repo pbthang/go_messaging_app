@@ -13,6 +13,7 @@ type IMServiceImpl struct{}
 
 func (s *IMServiceImpl) Send(_ context.Context, req *rpc.SendRequest) (*rpc.SendResponse, error) {
 	req.Message.SendTime = time.Now().Unix()
+	log.Println("SEND: ", req.Message.Chat, req.Message.Text, req.Message.Sender, req.Message.SendTime)
 	resp := rpc.NewSendResponse()
 
 	err := model.InsertMessage(req.Message)
@@ -29,6 +30,7 @@ func (s *IMServiceImpl) Send(_ context.Context, req *rpc.SendRequest) (*rpc.Send
 }
 
 func (s *IMServiceImpl) Pull(_ context.Context, req *rpc.PullRequest) (*rpc.PullResponse, error) {
+	log.Println("PULL: ", req.Chat, req.Cursor, req.Limit, req.Reverse)
 	resp := rpc.NewPullResponse()
 	if req.Reverse == nil {
 		req.Reverse = new(bool)
